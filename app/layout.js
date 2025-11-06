@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({ children }) {
         <title>Elchin Hasanov</title>
       </head>
   <body className={`${geistSans.variable} ${geistMono.variable} ${display.variable} antialiased`}>
+        <Analytics />
         {children}
       </body>
     </html>
