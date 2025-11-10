@@ -18,7 +18,7 @@ const projectsSeed = [
   },
   {
     id: "gamepulse",
-    title: "GamePulse",
+    title: "GamePulse (HackGT PrizePicks 🥈)",
     images: [
       "/gallery/project2-1.jpeg",
       "/gallery/project2-2.jpeg",
@@ -43,10 +43,10 @@ const projectsSeed = [
   // Centered second-row card (T layout)
   {
     id: "pathfindr",
-    title: "PathFindr",
+    title: "PathFindr (AI ATL Hackathon 🥇)",
     video: "https://www.youtube.com/embed/0d27K5rJvG0",
     blurb:
-      "PathFindr is an iOS application designed to help people who are visually impaired navigate their surroundings using ARKit, LiDAR depth sensing, and a multimodal AI backend powered by Google’s Gemini models. The app provides real-time obstacle detection, spatial audio guidance, haptic feedback, and conversational assistance—through a voice interface.",
+      "PathFindr is an iOS application designed to help people who are visually impaired navigate their surroundings. The app provides real-time obstacle detection, spatial audio guidance, haptic feedback, and conversational assistance—through a voice interface.",
     stack: ["Swift", "Flask", "ARKit", "ADK", "Firebase", "LiDAR", "Gemini LLM"],
   },
 ];
@@ -87,7 +87,7 @@ function TechStack() {
   // Newly added for PathFindr
   "Swift","Flask","ARKit","ADK","LiDAR","Gemini LLM",
     // Additional tools
-    "React","JavaScript","C++","Node.js","Supabase","MongoDB","Redis","OpenAI","PyTorch","scikit-learn","Pandas","Streamlit","FastAPI"
+    "React","JavaScript","C++","Node.js","Supabase","Redis","OpenAI","PyTorch","scikit-learn","Pandas","Streamlit","FastAPI"
   ];
   return (
     <section id="stack" className="scroll-mt-24">
