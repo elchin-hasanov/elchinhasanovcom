@@ -8,37 +8,46 @@ const projectsSeed = [
     id: "examzen",
     title: "ExamZen — IB Practice Platform",
     images: [
-  "/gallery/project1-1.png",
-  "/gallery/project1-2.png",
-  "/gallery/project1-3.png",
+      "/gallery/project1-1.png",
+      "/gallery/project1-2.png",
+      "/gallery/project1-3.png",
     ],
     blurb:
       "ExamZen helps IB students prepare by generating exam-style questions, step-by-step solutions, and instant feedback aligned to the syllabus for fast, focused practice.",
-  stack: ["Next.js", "Tailwind", "Supabase", "PostgreSQL", "Vercel", "OpenAI", "Django", "Redis"],
+    stack: ["Next.js", "Tailwind", "Supabase", "PostgreSQL", "Vercel", "OpenAI", "Django", "Redis"],
   },
   {
     id: "gamepulse",
     title: "GamePulse",
     images: [
-  "/gallery/project2-1.jpeg",
-  "/gallery/project2-2.jpeg",
-  "/gallery/project2-3.jpeg",
+      "/gallery/project2-1.jpeg",
+      "/gallery/project2-2.jpeg",
+      "/gallery/project2-3.jpeg",
     ],
     blurb:
       "GamePulse turns live play-by-play into quick prediction prompts where friends compete in real-time rooms with buy-ins, leaderboards, and instant results.",
-  stack: ["React Native", "WebSockets", "Supabase", "PostgreSQL", "OpenAI", "SportsDataIO"],
+    stack: ["React Native", "WebSockets", "Supabase", "PostgreSQL", "OpenAI", "SportsDataIO"],
   },
   {
     id: "teng",
     title: "TriboElectric Nanogenerators (TENG) — Materials Research",
     images: [
-  "/gallery/project3-1.jpeg",
-  "/gallery/project3-2.jpeg",
-  "/gallery/project3-3.jpeg",
+      "/gallery/project3-1.jpeg",
+      "/gallery/project3-2.jpeg",
+      "/gallery/project3-3.jpeg",
     ],
     blurb:
       "Built a hybrid energy demo that harvests motion and sunlight, streams device data, and forecasts output to show how small sensors can power autonomous IoT systems.",
-  stack: ["C++", "Arduino", "MQTT", "Firebase", "TensorFlow", "LightGBM"],
+    stack: ["C++", "Arduino", "MQTT", "Firebase", "TensorFlow", "LightGBM"],
+  },
+  // Centered second-row card (T layout)
+  {
+    id: "pathfindr",
+    title: "PathFindr",
+    video: "https://www.youtube.com/embed/0d27K5rJvG0",
+    blurb:
+      "PathFindr is an iOS application designed to help people who are visually impaired navigate their surroundings using ARKit, LiDAR depth sensing, and a multimodal AI backend powered by Google’s Gemini models. The app provides real-time obstacle detection, spatial audio guidance, haptic feedback, and conversational assistance—through a voice interface.",
+    stack: ["Swift", "Flask", "ARKit", "ADK", "Firebase", "LiDAR", "Gemini LLM"],
   },
 ];
 
@@ -74,7 +83,9 @@ export default function Home() {
 function TechStack() {
   const tech = [
     // Requested items first
-    "Python","Django","React Native","Next.js","TypeScript","Tailwind","TensorFlow","Firebase","PostgreSQL","Git","Docker","AWS",
+  "Python","Django","React Native","Next.js","TypeScript","Tailwind","TensorFlow","Firebase","PostgreSQL","Git","Docker","AWS",
+  // Newly added for PathFindr
+  "Swift","Flask","ARKit","ADK","LiDAR","Gemini LLM",
     // Additional tools
     "React","JavaScript","C++","Node.js","Supabase","MongoDB","Redis","OpenAI","PyTorch","scikit-learn","Pandas","Streamlit","FastAPI"
   ];
@@ -217,9 +228,11 @@ function Projects({ items, mounted }) {
         </div>
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((p, i) => (
-            <li key={p.id} className={`${
-                mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-              } transition-all`} style={{ transitionDelay: `${150 + i * 60}ms` }}>
+            <li
+              key={p.id}
+              className={`${mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"} transition-all ${p.id === 'pathfindr' ? 'lg:col-start-2 lg:row-start-2' : ''}`}
+              style={{ transitionDelay: `${150 + i * 60}ms` }}
+            >
               <ProjectCard p={p} />
             </li>
           ))}
@@ -235,17 +248,21 @@ function ProjectCard({ p }) {
   const timerRef = useRef(null);
 
   useEffect(() => {
+    // Disable auto-advance when video present
+    if (p.video) {
+      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+      return;
+    }
     if (!hover) {
       setIdx(0);
       if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
       return;
     }
-    // auto-advance every 1100ms while hovering
     timerRef.current = setInterval(() => {
       setIdx((i) => (i + 1) % (p.images?.length || 1));
     }, 1100);
     return () => { if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; } };
-  }, [hover, p.images]);
+  }, [hover, p.images?.length, !!p.video]);
 
   const current = p.images?.[idx] || p.images?.[0];
   return (
@@ -255,7 +272,15 @@ function ProjectCard({ p }) {
       onMouseLeave={() => setHover(false)}
     >
       <div className="relative h-40 w-full overflow-hidden bg-zinc-100">
-        {current ? (
+        {p.video ? (
+          <iframe
+            src={`${p.video}?rel=0&modestbranding=1`}
+            title={p.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            className="absolute inset-0 h-full w-full"
+          />
+        ) : current ? (
           <Image
             key={current}
             src={current}
@@ -266,7 +291,7 @@ function ProjectCard({ p }) {
           />
         ) : null}
         {/* small dot indicators on hover */}
-        {p.images?.length > 1 && (
+        {!p.video && p.images?.length > 1 && (
           <div className="pointer-events-none absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             {p.images.map((_, i) => (
               <span key={i} className={`h-1.5 w-1.5 rounded-full ${i === idx ? 'bg-white' : 'bg-white/50'}`} />
@@ -510,6 +535,27 @@ function StackIcon({ name }) {
     case "Plotly":
       return (
         <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 18V9M12 18V6M18 18v-5"/></svg>
+      );
+    case "Swift":
+      return (
+        <svg {...common} fill="currentColor"><path d="M20 8c-1-2-3-3-5-3-1 0-2 .3-3 .8-2.5-2-4.6-3.2-4.6-3.2s1.8 2.7 4.1 5C9.8 6.8 7.8 5 7.8 5s2.4 3.7 5.1 6c-.6.3-1.3.5-2 .5-2 0-3.9-1.5-3.9-1.5s1.7 3.4 4.9 4.2c1.7.4 3.4.2 4.8-.5.7.4 1.3.8 1.8 1.3.4.3.9.5 1.3.2.5-.4.4-1.1.2-1.6-.3-.8-.9-1.8-1.8-2.7Z"/></svg>
+      );
+    case "Flask":
+      return (
+        <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M8 3h8M9 7h6M7 7s0 5 5 10 5 10 5 10"/></svg>
+      );
+    case "ARKit":
+    case "ADK":
+      return (
+        <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10l4-2 4 2M8 14h8"/></svg>
+      );
+    case "LiDAR":
+      return (
+        <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="8"/><path d="M4 12h4M16 12h4M12 4v4M12 16v4"/></svg>
+      );
+    case "Gemini LLM":
+      return (
+        <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="9" cy="12" r="3"/><circle cx="15" cy="12" r="3"/><path d="M12 9v6"/></svg>
       );
     default:
       return null;
